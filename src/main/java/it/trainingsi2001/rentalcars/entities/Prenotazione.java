@@ -37,9 +37,12 @@ public class Prenotazione {
     @Column(name = "data_fine")
     private LocalDateTime dataFine;
 
+    @Column(name = "flag_approvazione")
+    private Boolean flagApprovazione; 
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_utente", nullable = false)
-    private Utente cliente;
+    private Utente utente;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_veicolo", nullable = false)

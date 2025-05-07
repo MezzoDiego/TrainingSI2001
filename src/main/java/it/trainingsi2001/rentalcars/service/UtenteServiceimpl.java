@@ -7,6 +7,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import it.trainingsi2001.rentalcars.entities.Ruolo;
 import it.trainingsi2001.rentalcars.entities.StatoUtente;
 import it.trainingsi2001.rentalcars.entities.Utente;
 import it.trainingsi2001.rentalcars.repository.UtenteRepository;
@@ -34,8 +35,15 @@ public class UtenteServiceimpl implements UtenteService {
     @Override
     @Transactional
     public Utente aggiorna(Utente obj) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'aggiorna'");
+		Utente utenteReloaded = utenteRepository.findById(obj.getId()).orElse(null);
+		if (utenteReloaded == null)
+			throw new RuntimeException("Elemento non trovato");
+		utenteReloaded.setNome(obj.getNome());
+		utenteReloaded.setCognome(obj.getCognome());
+		utenteReloaded.setDataDiNascita(obj.getDataDiNascita());
+		utenteReloaded.setUsername(obj.getUsername());
+		utenteReloaded.setRuolo(obj.getRuolo());
+		return utenteRepository.save(utenteReloaded);
     }
 
     @Override
@@ -70,6 +78,11 @@ public class UtenteServiceimpl implements UtenteService {
     @Override
     public Utente findByUsername(String username) {
         return utenteRepository.findByUsername(username).orElse(null);
+    }
+
+    @Override
+    public List<Utente> caricaListaUtentiByRuolo(Ruolo ruolo) {
+        return utenteRepository.findByRuolo(ruolo);
     }
 
 }
