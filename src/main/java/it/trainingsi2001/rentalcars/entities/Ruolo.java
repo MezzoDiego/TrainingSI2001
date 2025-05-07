@@ -21,8 +21,8 @@ import lombok.Setter;
 @Table(name = "ruolo")
 public class Ruolo {
 
-    public static final String SUPER_ADMIN_ROLE = "SUPER_ADMIN";
-    public static final String CUSTOMER_ROLE = "CUSTOMER";
+    public static final String SUPER_ADMIN_ROLE = "Super User";
+    public static final String CUSTOMER_ROLE = "Customer";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
