@@ -35,15 +35,16 @@ public class UtenteServiceimpl implements UtenteService {
     @Override
     @Transactional
     public Utente aggiorna(Utente obj) {
-		Utente utenteReloaded = utenteRepository.findByIdConRuolo(obj.getId()).orElse(null);
-		if (utenteReloaded == null)
-			throw new RuntimeException("Elemento non trovato");
-		utenteReloaded.setNome(obj.getNome());
-		utenteReloaded.setCognome(obj.getCognome());
-		utenteReloaded.setDataDiNascita(obj.getDataDiNascita());
-		utenteReloaded.setUsername(obj.getUsername());
-		utenteReloaded.setRuolo(obj.getRuolo());
-		return utenteRepository.save(utenteReloaded);
+        Utente utenteReloaded = utenteRepository.findByIdConRuolo(obj.getId()).orElse(null);
+        if (utenteReloaded == null)
+            throw new RuntimeException("Elemento non trovato");
+        utenteReloaded.setNome(obj.getNome());
+        utenteReloaded.setCognome(obj.getCognome());
+        utenteReloaded.setDataDiNascita(obj.getDataDiNascita());
+        utenteReloaded.setUsername(obj.getUsername());
+        if (obj.getRuolo() != null && obj.getRuolo().getId() != null && obj.getRuolo().getId().equals(1L))
+            utenteReloaded.setRuolo(obj.getRuolo());
+        return utenteRepository.save(utenteReloaded);
     }
 
     @Override
@@ -88,6 +89,11 @@ public class UtenteServiceimpl implements UtenteService {
     @Override
     public Utente caricaUtenteConRuolo(Long id) {
         return utenteRepository.findByIdConRuolo(id).orElse(null);
+    }
+
+    @Override
+    public List<Utente> caricaUtentiByFilters(Utente filters) {
+        return utenteRepository.findByExample(filters);
     }
 
 }

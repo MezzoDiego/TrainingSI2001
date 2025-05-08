@@ -14,31 +14,36 @@ import jakarta.persistence.TypedQuery;
 
 public class CustomUtenteRepositoryImpl implements CustomUtenteRepository {
 
-    @PersistenceContext
-    private EntityManager entityManager;
+	@PersistenceContext
+	private EntityManager entityManager;
 
-    @Override
-    public List<Utente> findByExample(Utente example) {
-        		Map<String, Object> paramaterMap = new HashMap<String, Object>();
+	@Override
+	public List<Utente> findByExample(Utente example) {
+		Map<String, Object> paramaterMap = new HashMap<String, Object>();
 		List<String> whereClauses = new ArrayList<String>();
 
 		StringBuilder queryBuilder = new StringBuilder("select u from Utente u where u.id = u.id ");
 
-		if (StringUtils.isNotEmpty(example.getNome())) {
+		if (example.getNome() != null && StringUtils.isNotEmpty(example.getNome())) {
 			whereClauses.add(" u.nome  like :nome ");
 			paramaterMap.put("nome", "%" + example.getNome() + "%");
 		}
-		if (StringUtils.isNotEmpty(example.getCognome())) {
+		if (example.getCognome() != null && StringUtils.isNotEmpty(example.getCognome())) {
 			whereClauses.add(" u.cognome like :cognome ");
 			paramaterMap.put("cognome", "%" + example.getCognome() + "%");
 		}
-		if (example.getUsername() != null) {
+		if (example.getUsername() != null && StringUtils.isNotEmpty(example.getCognome())) {
 			whereClauses.add(" u.username like :username ");
 			paramaterMap.put("username", "%" + example.getUsername() + "%");
 		}
-        if (example.getStato() != null) {
+		if (example.getStato() != null) {
 			whereClauses.add(" u.stato = :stato ");
 			paramaterMap.put("stato", example.getStato());
+		}
+
+		if (example.getDataDiNascita() != null) {
+			whereClauses.add(" u.dataDiNascita = :dataDiNascita ");
+			paramaterMap.put("dataDiNascita", example.getDataDiNascita());
 		}
 
 		queryBuilder.append(!whereClauses.isEmpty() ? " and " : "");
@@ -50,7 +55,6 @@ public class CustomUtenteRepositoryImpl implements CustomUtenteRepository {
 		}
 
 		return typedQuery.getResultList();
-    }
-
+	}
 
 }

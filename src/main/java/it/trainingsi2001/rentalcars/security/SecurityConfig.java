@@ -38,9 +38,12 @@ public class SecurityConfig {
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/auth/login").permitAll()
+                .requestMatchers("/api/veicolo/listAll").hasAuthority("Customer")
                 .requestMatchers("/api/utente/**").hasAuthority("Super User")
                 .requestMatchers("/api/prenotazione/changeApproval/**").hasAuthority("Super User")
                 .requestMatchers("/api/veicolo/**").hasAuthority("Super User")
+                .requestMatchers("/api/tipologia/**").hasAuthority("Super User")
+                .requestMatchers("/api/customer/**").hasAuthority("Customer")
                 .anyRequest().authenticated());
 
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);

@@ -49,7 +49,7 @@ public class VeicoloController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public void inserisciNuovoVeicolo(@PathVariable(value = "id", required = true) Long id) {
+    public void deleteVeicolo(@PathVariable(value = "id", required = true) Long id) {
         veicoloService.rimuovi(id);
     }
 

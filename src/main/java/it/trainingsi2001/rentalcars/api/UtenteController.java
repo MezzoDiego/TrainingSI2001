@@ -58,7 +58,20 @@ public class UtenteController {
 
     @DeleteMapping("/deleteUtente")
     public void deleteUtente(@RequestBody UtenteDTO bodyUtente) {
-        utenteService.rimuovi(bodyUtente.getId());  
+        utenteService.rimuovi(bodyUtente.getId());
+    }
+
+    @PostMapping("/filterSearch")
+    public List<UtenteDTO> filterSearch(@RequestBody UtenteDTO entity) {
+        List<UtenteDTO> utentiByFiltersDTO = new ArrayList<>();
+        List<Utente> utentiByFilters = utenteService
+                .caricaUtentiByFilters(utenteMapper.toEntity(entity));
+
+        for (Utente item : utentiByFilters) {
+            utentiByFiltersDTO.add(utenteMapper.toDto(item));
+        }
+
+        return utentiByFiltersDTO;
     }
 
 }

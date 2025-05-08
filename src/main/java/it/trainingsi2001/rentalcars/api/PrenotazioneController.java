@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import it.trainingsi2001.rentalcars.dto.PrenotazioneDTO;
+import it.trainingsi2001.rentalcars.dto.PrenotazioneExampleDTO;
 import it.trainingsi2001.rentalcars.dto.mapper.PrenotazioneMapper;
 import it.trainingsi2001.rentalcars.entities.Prenotazione;
 import it.trainingsi2001.rentalcars.service.PrenotazioneService;
@@ -74,6 +75,18 @@ public class PrenotazioneController {
         return prenotazioneMapper
                 .toDto(prenotazioneService.inserisciNuovo(prenotazioneMapper.toEntity(bodyPrenotazione)));
 
+    }
+
+    @PostMapping("/filterSearch")
+    public List<PrenotazioneDTO> filterSearch(@RequestBody PrenotazioneExampleDTO entity) {
+        List<PrenotazioneDTO> prenotazioniByFiltersDTO = new ArrayList<>();
+        List<Prenotazione> prenotazioniByFilters = prenotazioneService.caricaPrenotazioniByFilters(prenotazioneMapper.toExampleEntity(entity));
+        
+        for(Prenotazione item : prenotazioniByFilters) {
+            prenotazioniByFiltersDTO.add(prenotazioneMapper.toDto(item));
+        }
+
+        return prenotazioniByFiltersDTO;
     }
 
 }

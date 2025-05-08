@@ -26,7 +26,7 @@ public class CustomPrenotazioneRepositoryImpl implements CustomPrenotazioneRepos
     EntityManager entityManager;
 
     @Override
-    public List<Prenotazione> findByExample(PrenotazioneExampleDTO example) {
+    public List<Prenotazione> findByExample(Prenotazione example) {
 
     CriteriaBuilder cb = entityManager.getCriteriaBuilder();
     CriteriaQuery<Prenotazione> query = cb.createQuery(Prenotazione.class);
@@ -41,44 +41,48 @@ public class CustomPrenotazioneRepositoryImpl implements CustomPrenotazioneRepos
     List<Predicate> predicates = new ArrayList<>();
 
     // Filtro Utente
-    if (StringUtils.isNotBlank(example.getNomeUtente())) {
-        predicates.add(cb.like(cb.lower(utenteJoin.get("nome")), "%" + example.getNomeUtente().toLowerCase() + "%"));
+    if (example.getUtente() != null && example.getUtente().getNome() != null && StringUtils.isNotBlank(example.getUtente().getNome())) {
+        predicates.add(cb.like(cb.lower(utenteJoin.get("nome")), "%" + example.getUtente().getNome().toLowerCase() + "%"));
     }
-    if (StringUtils.isNotBlank(example.getCognomeUtente())) {
-        predicates.add(cb.like(cb.lower(utenteJoin.get("cognome")), "%" + example.getCognomeUtente().toLowerCase() + "%"));
+    if (example.getUtente() != null && example.getUtente().getCognome() != null && StringUtils.isNotBlank(example.getUtente().getCognome())) {
+        predicates.add(cb.like(cb.lower(utenteJoin.get("cognome")), "%" + example.getUtente().getCognome().toLowerCase() + "%"));
     }
-    if (StringUtils.isNotBlank(example.getDataDiNascitaUtente())) {
-        predicates.add(cb.like(cb.lower(utenteJoin.get("dataDiNascita")), "%" + example.getDataDiNascitaUtente().toLowerCase() + "%"));
+    if (example.getUtente() != null && example.getUtente().getDataDiNascita() != null) {
+        predicates.add(cb.equal(utenteJoin.get("dataDiNascita"), example.getUtente().getDataDiNascita()));
     }
-    if (StringUtils.isNotBlank(example.getStatoUtente())) {
-        predicates.add(cb.equal(utenteJoin.get("stato"), example.getStatoUtente()));
+    if (example.getUtente() != null && example.getUtente().getStato() != null) {
+        predicates.add(cb.equal(utenteJoin.get("stato"), example.getUtente().getStato()));
     }
 
     // Filtro Veicolo
-    if (StringUtils.isNotBlank(example.getModelloVeicolo())) {
-        predicates.add(cb.like(cb.lower(veicoloJoin.get("modello")), "%" + example.getModelloVeicolo().toLowerCase() + "%"));
+    if (example.getVeicolo() != null && example.getVeicolo().getModello() != null && StringUtils.isNotBlank(example.getVeicolo().getModello())) {
+        predicates.add(cb.like(cb.lower(veicoloJoin.get("modello")), "%" + example.getVeicolo().getModello().toLowerCase() + "%"));
     }
-    if (StringUtils.isNotBlank(example.getTargaVeicolo())) {
-        predicates.add(cb.like(cb.lower(veicoloJoin.get("targa")), "%" + example.getTargaVeicolo().toLowerCase() + "%"));
+    if (example.getVeicolo() != null && example.getVeicolo().getTarga() != null && StringUtils.isNotBlank(example.getVeicolo().getTarga())) {
+        predicates.add(cb.like(cb.lower(veicoloJoin.get("targa")), "%" + example.getVeicolo().getTarga().toLowerCase() + "%"));
     }
-    if (StringUtils.isNotBlank(example.getAlimentazioneVeicolo())) {
-        predicates.add(cb.like(cb.lower(veicoloJoin.get("alimentazione")), "%" + example.getAlimentazioneVeicolo().toLowerCase() + "%"));
+    if (example.getVeicolo() != null && example.getVeicolo().getAlimentazione() != null && StringUtils.isNotBlank(example.getVeicolo().getAlimentazione())) {
+        predicates.add(cb.like(cb.lower(veicoloJoin.get("alimentazione")), "%" + example.getVeicolo().getAlimentazione().toLowerCase() + "%"));
     }
-    if (StringUtils.isNotBlank(example.getCasaCostruttriceVeicolo())) {
-        predicates.add(cb.like(cb.lower(veicoloJoin.get("casaCostruttrice")), "%" + example.getCasaCostruttriceVeicolo().toLowerCase() + "%"));
+    if (example.getVeicolo() != null && example.getVeicolo().getCasaCostruttrice() != null && StringUtils.isNotBlank(example.getVeicolo().getCasaCostruttrice())) {
+        predicates.add(cb.like(cb.lower(veicoloJoin.get("casaCostruttrice")), "%" + example.getVeicolo().getCasaCostruttrice().toLowerCase() + "%"));
     }
 
     // Tipologia
-    if (StringUtils.isNotBlank(example.getTipologiaVeicolo())) {
-        predicates.add(cb.like(cb.lower(tipologiaJoin.get("descrizione")), "%" + example.getTipologiaVeicolo().toLowerCase() + "%"));
+    if (example.getVeicolo() != null && example.getVeicolo().getTipologia() != null) {
+        predicates.add(cb.equal(tipologiaJoin.get("id"), example.getVeicolo().getTipologia().getId()));
     }
 
     // Date
-    if (example.getDataInizioPrenotazione() != null) {
-        predicates.add(cb.greaterThanOrEqualTo(root.get("dataInizio"), example.getDataInizioPrenotazione()));
+    if (example.getDataInizio() != null) {
+        predicates.add(cb.greaterThanOrEqualTo(root.get("dataInizio"), example.getDataInizio()));
     }
-    if (example.getDataFinePrenotazione() != null) {
-        predicates.add(cb.lessThanOrEqualTo(root.get("dataFine"), example.getDataFinePrenotazione()));
+    if (example.getDataFine() != null) {
+        predicates.add(cb.lessThanOrEqualTo(root.get("dataFine"), example.getDataFine()));
+    }
+
+    if(example.getFlagApprovazione() != null){
+        predicates.add(cb.equal(root.get("flagApprovazione"), example.getFlagApprovazione()));
     }
 
     query.where(cb.and(predicates.toArray(new Predicate[0])));

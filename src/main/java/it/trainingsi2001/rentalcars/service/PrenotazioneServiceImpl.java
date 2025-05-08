@@ -97,4 +97,11 @@ public class PrenotazioneServiceImpl implements PrenotazioneService {
         return prenotazioneRepository.save(prenotazioneReloaded);
     }
 
+    @Override
+    public List<Prenotazione> caricaPrenotazioniByFilters(Prenotazione prenotazioneItem) {
+
+        return prenotazioneRepository.findByExample(prenotazioneItem);
+
+    }
+
 }

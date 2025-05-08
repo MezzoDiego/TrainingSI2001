@@ -10,4 +10,5 @@ public interface UtenteService extends BaseService<Utente> {
     Utente findByUsername(String username);
     List<Utente> caricaListaUtentiByRuolo(Ruolo ruolo);
     Utente caricaUtenteConRuolo(Long id);
+    List<Utente> caricaUtentiByFilters(Utente filters);
 }

@@ -10,4 +10,5 @@ public interface PrenotazioneService extends BaseService<Prenotazione>{
     int cambiaStatoPrenotazione(Long idPrenotazione, Boolean flagApprovazione);
     void cancellaPrenotazioneByIdInTempo(Long id);
     Prenotazione modificaPrenotazioneInTempo(Prenotazione prenotazioneItem);
+    List<Prenotazione> caricaPrenotazioniByFilters(Prenotazione prenotazioneItem);
 }
