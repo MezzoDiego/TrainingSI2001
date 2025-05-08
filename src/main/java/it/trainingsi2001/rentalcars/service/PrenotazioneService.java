@@ -7,7 +7,7 @@ import it.trainingsi2001.rentalcars.entities.Utente;
 
 public interface PrenotazioneService extends BaseService<Prenotazione>{
     List<Prenotazione> caricaListaPrenotazioniByUtente(Utente utente);
-    int cambiaStatoPrenotazione(Long idPrenotazione, boolean flagApprovazione);
+    int cambiaStatoPrenotazione(Long idPrenotazione, Boolean flagApprovazione);
     void cancellaPrenotazioneByIdInTempo(Long id);
     Prenotazione modificaPrenotazioneInTempo(Prenotazione prenotazioneItem);
 }

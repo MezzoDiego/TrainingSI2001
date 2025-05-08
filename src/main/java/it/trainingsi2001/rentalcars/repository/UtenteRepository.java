@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import it.trainingsi2001.rentalcars.entities.Ruolo;
 import it.trainingsi2001.rentalcars.entities.Utente;
@@ -16,5 +17,8 @@ public interface UtenteRepository extends JpaRepository<Utente, Long>, CustomUte
 
 	Utente findByUsernameAndPassword(String username, String password);
 	List<Utente> findByRuolo(Ruolo ruolo);
+
+	@Query("from Utente u left join fetch u.ruolo where u.id = ?1")
+	Optional<Utente> findByIdConRuolo(Long id);
 	
 }

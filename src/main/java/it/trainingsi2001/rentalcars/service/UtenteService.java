@@ -9,4 +9,5 @@ public interface UtenteService extends BaseService<Utente> {
     void changeUserAbilitation(Long idUtente);
     Utente findByUsername(String username);
     List<Utente> caricaListaUtentiByRuolo(Ruolo ruolo);
+    Utente caricaUtenteConRuolo(Long id);
 }

@@ -35,7 +35,7 @@ public class UtenteServiceimpl implements UtenteService {
     @Override
     @Transactional
     public Utente aggiorna(Utente obj) {
-		Utente utenteReloaded = utenteRepository.findById(obj.getId()).orElse(null);
+		Utente utenteReloaded = utenteRepository.findByIdConRuolo(obj.getId()).orElse(null);
 		if (utenteReloaded == null)
 			throw new RuntimeException("Elemento non trovato");
 		utenteReloaded.setNome(obj.getNome());
@@ -83,6 +83,11 @@ public class UtenteServiceimpl implements UtenteService {
     @Override
     public List<Utente> caricaListaUtentiByRuolo(Ruolo ruolo) {
         return utenteRepository.findByRuolo(ruolo);
+    }
+
+    @Override
+    public Utente caricaUtenteConRuolo(Long id) {
+        return utenteRepository.findByIdConRuolo(id).orElse(null);
     }
 
 }

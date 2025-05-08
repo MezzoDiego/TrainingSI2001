@@ -9,15 +9,24 @@ import org.springframework.transaction.annotation.Transactional;
 
 import it.trainingsi2001.rentalcars.entities.Prenotazione;
 import it.trainingsi2001.rentalcars.entities.Utente;
+import it.trainingsi2001.rentalcars.entities.Veicolo;
 import it.trainingsi2001.rentalcars.repository.PrenotazioneRepository;
+import it.trainingsi2001.rentalcars.repository.UtenteRepository;
+import it.trainingsi2001.rentalcars.repository.VeicoloRepository;
 import jakarta.persistence.EntityNotFoundException;
 
 @Service
 @Transactional(readOnly = true)
-public class PrenotazioneServiceImpl implements PrenotazioneService{
+public class PrenotazioneServiceImpl implements PrenotazioneService {
 
     @Autowired
     PrenotazioneRepository prenotazioneRepository;
+
+    @Autowired
+    UtenteRepository utenteRepository;
+
+    @Autowired
+    VeicoloRepository veicoloRepository;
 
     @Override
     public List<Prenotazione> listAll() {
@@ -54,8 +63,11 @@ public class PrenotazioneServiceImpl implements PrenotazioneService{
 
     @Override
     @Transactional
-    public int cambiaStatoPrenotazione(Long idPrenotazione, boolean flagApprovazione) {
-        return prenotazioneRepository.updateflagApprovazioneById(idPrenotazione, flagApprovazione);
+    public int cambiaStatoPrenotazione(Long idPrenotazione, Boolean flagApprovazione) {
+        Prenotazione prenotazioneReloaded = this.caricaSingoloElemento(idPrenotazione);
+        prenotazioneReloaded.setFlagApprovazione(flagApprovazione);
+        return prenotazioneRepository.updateflagApprovazioneById(idPrenotazione,
+                prenotazioneReloaded.getFlagApprovazione());
     }
 
     @Override
@@ -67,14 +79,22 @@ public class PrenotazioneServiceImpl implements PrenotazioneService{
     @Override
     @Transactional
     public Prenotazione modificaPrenotazioneInTempo(Prenotazione prenotazioneItem) {
-        Prenotazione prenotazioneReloadedById = prenotazioneRepository.findById(prenotazioneItem.getId())
-            .orElseThrow(() -> new EntityNotFoundException("Prenotazione non trovata"));
+        Prenotazione prenotazioneReloaded = prenotazioneRepository.findById(prenotazioneItem.getId())
+                .orElseThrow(() -> new EntityNotFoundException("Prenotazione non trovata"));
 
-    if (prenotazioneReloadedById.getDataInizio().isBefore(LocalDateTime.now().plusDays(2))) {
-        throw new IllegalStateException("La prenotazione non può essere modificata: mancano meno di 2 giorni all'inizio.");
-    }
+        if (prenotazioneReloaded.getDataInizio().isBefore(LocalDateTime.now().plusDays(2))) {
+            throw new IllegalStateException(
+                    "La prenotazione non può essere modificata: mancano meno di 2 giorni all'inizio.");
+        }
 
-    return prenotazioneRepository.save(prenotazioneItem);
+        prenotazioneReloaded.setDataInizio(prenotazioneItem.getDataInizio());
+        prenotazioneReloaded.setDataFine(prenotazioneItem.getDataFine());
+
+        Veicolo veicolo = veicoloRepository.findById(prenotazioneItem.getVeicolo().getId())
+                .orElseThrow(() -> new EntityNotFoundException("Veicolo non trovato"));
+        prenotazioneReloaded.setVeicolo(veicolo);
+
+        return prenotazioneRepository.save(prenotazioneReloaded);
     }
 
 }
