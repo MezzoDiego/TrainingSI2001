@@ -40,6 +40,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/auth/login").permitAll()
                 .requestMatchers("/api/utente/**").hasAuthority("Super User")
                 .requestMatchers("/api/prenotazione/changeApproval/**").hasAuthority("Super User")
+                .requestMatchers("/api/veicolo/**").hasAuthority("Super User")
                 .anyRequest().authenticated());
 
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
