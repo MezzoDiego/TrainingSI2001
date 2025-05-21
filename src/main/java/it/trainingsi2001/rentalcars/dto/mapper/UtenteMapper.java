@@ -7,24 +7,12 @@ import org.springframework.stereotype.Component;
 import it.trainingsi2001.rentalcars.dto.UtenteDTO;
 import it.trainingsi2001.rentalcars.entities.Ruolo;
 import it.trainingsi2001.rentalcars.entities.Utente;
-import jakarta.annotation.PostConstruct;
 
 @Component
 public class UtenteMapper {
 
     @Autowired
     private ModelMapper modelMapper;
-
-    @PostConstruct
-    public void configureMappings() {
-        modelMapper.typeMap(Utente.class, UtenteDTO.class).addMappings(mapper -> {
-            mapper.skip(UtenteDTO::setRuolo); 
-        });
-
-        modelMapper.typeMap(UtenteDTO.class, Utente.class).addMappings(mapper -> {
-            mapper.skip(Utente::setRuolo); 
-        });
-    }
 
     public UtenteDTO toDto(Utente utente) {
         UtenteDTO dto = modelMapper.map(utente, UtenteDTO.class);

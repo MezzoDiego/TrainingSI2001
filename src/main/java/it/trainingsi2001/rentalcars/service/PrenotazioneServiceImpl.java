@@ -63,11 +63,9 @@ public class PrenotazioneServiceImpl implements PrenotazioneService {
 
     @Override
     @Transactional
-    public int cambiaStatoPrenotazione(Long idPrenotazione, Boolean flagApprovazione) {
-        Prenotazione prenotazioneReloaded = this.caricaSingoloElemento(idPrenotazione);
-        prenotazioneReloaded.setFlagApprovazione(flagApprovazione);
-        return prenotazioneRepository.updateflagApprovazioneById(idPrenotazione,
-                prenotazioneReloaded.getFlagApprovazione());
+    public Prenotazione cambiaStatoPrenotazione(Long idPrenotazione, Boolean flagApprovazione) {
+        prenotazioneRepository.updateFlagApprovazioneById(idPrenotazione, flagApprovazione);
+        return this.caricaSingoloElemento(idPrenotazione);
     }
 
     @Override
@@ -102,6 +100,12 @@ public class PrenotazioneServiceImpl implements PrenotazioneService {
 
         return prenotazioneRepository.findByExample(prenotazioneItem);
 
+    }
+
+    @Override
+    public Prenotazione caricaSingoloElementoConVeicoloEUtente(Long id) {
+        return prenotazioneRepository.findByIdFetchVeicoloAndUtente(id)
+                .orElseThrow(() -> new EntityNotFoundException("prenotazione non trovata"));
     }
 
 }

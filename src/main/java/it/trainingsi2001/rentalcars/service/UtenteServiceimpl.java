@@ -44,6 +44,8 @@ public class UtenteServiceimpl implements UtenteService {
         utenteReloaded.setUsername(obj.getUsername());
         if (obj.getRuolo() != null && obj.getRuolo().getId() != null && obj.getRuolo().getId().equals(1L))
             utenteReloaded.setRuolo(obj.getRuolo());
+        if (obj.getPassword() != null && !obj.getPassword().isEmpty())
+            utenteReloaded.setPassword(passwordEncoder.encode(obj.getPassword()));
         return utenteRepository.save(utenteReloaded);
     }
 

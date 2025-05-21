@@ -41,5 +41,5 @@ public class VeicoloDTO {
 
     private String alimentazione;
 
-    private Long tipologia;
+    private TipologiaDTO tipologia;
 }

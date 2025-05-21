@@ -32,7 +32,7 @@ public class CustomUtenteRepositoryImpl implements CustomUtenteRepository {
 			whereClauses.add(" u.cognome like :cognome ");
 			paramaterMap.put("cognome", "%" + example.getCognome() + "%");
 		}
-		if (example.getUsername() != null && StringUtils.isNotEmpty(example.getCognome())) {
+		if (example.getUsername() != null && StringUtils.isNotEmpty(example.getUsername())) {
 			whereClauses.add(" u.username like :username ");
 			paramaterMap.put("username", "%" + example.getUsername() + "%");
 		}

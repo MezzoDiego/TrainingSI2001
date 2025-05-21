@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import it.trainingsi2001.rentalcars.dto.TipologiaDTO;
+import it.trainingsi2001.rentalcars.dto.VeicoloDTO;
 import it.trainingsi2001.rentalcars.dto.mapper.TipologiaMapper;
 import it.trainingsi2001.rentalcars.entities.Tipologia;
 import it.trainingsi2001.rentalcars.service.TipologiaService;
@@ -28,7 +29,7 @@ public class TipologiaController {
     @Autowired
     TipologiaMapper tipologiaMapper;
 
-    @GetMapping("/listAll")
+    @GetMapping
     public List<TipologiaDTO> listAllTipologie() {
         List<TipologiaDTO> tipologieDTO = new ArrayList<>();
         List<Tipologia> tipologieLoadedFromDB = tipologiaService.listAll();
@@ -40,19 +41,24 @@ public class TipologiaController {
         return tipologieDTO;
     }
 
-    @PostMapping("/inserisciNuova")
+    @GetMapping("/{id}")
+    public TipologiaDTO getTipologiaById(@PathVariable(value = "id", required = true) Long id) {
+        return tipologiaMapper.toDto(tipologiaService.caricaSingoloElemento(id));
+    }
+
+    @PostMapping
     public TipologiaDTO inserisciNuovaTipologia(@RequestBody TipologiaDTO bodyTipologia) {
 
         return tipologiaMapper.toDto(tipologiaService.inserisciNuovo(tipologiaMapper.toEntity(bodyTipologia)));
 
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public void deleteTipologia(@PathVariable(value = "id", required = true) Long id) {
         tipologiaService.rimuovi(id);
     }
 
-    @PutMapping("/modifica")
+    @PutMapping
     public TipologiaDTO modificaTipologia(@RequestBody TipologiaDTO bodyTipologia) {
 
         return tipologiaMapper.toDto(tipologiaService.aggiorna(tipologiaMapper.toEntity(bodyTipologia)));

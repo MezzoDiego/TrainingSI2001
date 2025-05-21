@@ -4,8 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,6 +19,7 @@ import it.trainingsi2001.rentalcars.dto.UtenteDTO;
 import it.trainingsi2001.rentalcars.dto.mapper.UtenteMapper;
 import it.trainingsi2001.rentalcars.entities.Ruolo;
 import it.trainingsi2001.rentalcars.entities.Utente;
+import it.trainingsi2001.rentalcars.security.dto.UtenteInfoJWTResponseDTO;
 import it.trainingsi2001.rentalcars.service.UtenteService;
 
 @RestController
@@ -28,7 +32,7 @@ public class UtenteController {
     @Autowired
     UtenteService utenteService;
 
-    @PostMapping("/creaUtente")
+    @PostMapping
     public UtenteDTO creaUtente(@RequestBody UtenteDTO bodyUtente) {
 
         if (bodyUtente.getId() != null)
@@ -49,16 +53,21 @@ public class UtenteController {
         return customersDTO;
     }
 
-    @PutMapping("/updateUtente")
+    @GetMapping("/{id}")
+    public UtenteDTO getUtente(@PathVariable(value = "id", required = true) Long id) {
+        return utenteMapper.toDto(utenteService.caricaSingoloElemento(id));
+    }
+
+    @PutMapping
     public UtenteDTO updateUtente(@RequestBody UtenteDTO bodyUtente) {
 
         return utenteMapper.toDto(utenteService.aggiorna(utenteMapper.toEntity(bodyUtente)));
 
     }
 
-    @DeleteMapping("/deleteUtente")
-    public void deleteUtente(@RequestBody UtenteDTO bodyUtente) {
-        utenteService.rimuovi(bodyUtente.getId());
+    @DeleteMapping("/{id}")
+    public void deleteUtente(@PathVariable(value = "id", required = true) Long id) {
+        utenteService.rimuovi(id);
     }
 
     @PostMapping("/filterSearch")
@@ -74,4 +83,20 @@ public class UtenteController {
         return utentiByFiltersDTO;
     }
 
+    @GetMapping(value = "/userInfo")
+    public ResponseEntity<UtenteInfoJWTResponseDTO> getUserInfo() {
+
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        Utente utenteLoggato = utenteService.findByUsername(username);
+        String ruolo = utenteLoggato.getRuolo().getDescrizione();
+
+        return ResponseEntity.ok(UtenteInfoJWTResponseDTO.builder()
+                .id(utenteLoggato.getId().toString())
+                .nome(utenteLoggato.getNome())
+                .cognome(utenteLoggato.getCognome())
+                .username(utenteLoggato.getUsername())
+                .role(ruolo)
+                .build());
+    }
 }

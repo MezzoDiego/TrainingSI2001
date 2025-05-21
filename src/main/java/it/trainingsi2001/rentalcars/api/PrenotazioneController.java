@@ -33,6 +33,25 @@ public class PrenotazioneController {
     @Autowired
     UtenteService utenteService;
 
+    @GetMapping
+    public List<PrenotazioneDTO> estraiPrenotazioni() {
+
+        List<PrenotazioneDTO> listaPrenotazioniDTO = new ArrayList<>();
+
+        List<Prenotazione> listaPrenotazioni = prenotazioneService
+                .listAll();
+
+        for (Prenotazione item : listaPrenotazioni) {
+            listaPrenotazioniDTO.add(prenotazioneMapper.toDto(item));
+        }
+        return listaPrenotazioniDTO;
+    }
+
+    @GetMapping("/{id}")
+    public PrenotazioneDTO getPrenotazione(@PathVariable(value = "id", required = true) Long id) {
+        return prenotazioneMapper.toDto(prenotazioneService.caricaSingoloElementoConVeicoloEUtente(id));
+    }
+
     @GetMapping("/estraiPrenotazioniUtente/{idUtente}")
     public List<PrenotazioneDTO> estraiPrenotazioniUtente(
             @PathVariable(value = "idUtente", required = true) Long idUtente) {
@@ -48,13 +67,13 @@ public class PrenotazioneController {
         return listaPrenotazioniDTO;
     }
 
-    @PostMapping("/changeApproval/{id}/{flagApprovazione}")
-    public void changeApproval(@PathVariable(value = "id", required = true) Long id,
+    @PutMapping("/changeApproval/{id}/{flagApprovazione}")
+    public PrenotazioneDTO changeApproval(@PathVariable(value = "id", required = true) Long id,
             @PathVariable(value = "flagApprovazione", required = true) Boolean flagApprovazione) {
-        prenotazioneService.cambiaStatoPrenotazione(id, flagApprovazione);
+        return prenotazioneMapper.toDto(prenotazioneService.cambiaStatoPrenotazione(id, flagApprovazione));
     }
 
-    @PutMapping("/modifica")
+    @PutMapping
     public PrenotazioneDTO modificaPrenotazione(@RequestBody PrenotazioneDTO bodyPrenotazione) {
 
         return prenotazioneMapper
@@ -62,12 +81,12 @@ public class PrenotazioneController {
 
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public void cancellaPrenotazione(@PathVariable(value = "id", required = true) Long id) {
         prenotazioneService.cancellaPrenotazioneByIdInTempo(id);
     }
 
-    @PostMapping("/inserisciNuova")
+    @PostMapping
     public PrenotazioneDTO inserisciNuovaPrenotazione(@RequestBody PrenotazioneDTO bodyPrenotazione) {
         if (bodyPrenotazione.getId() != null)
             throw new RuntimeException("Non è ammesso fornire un id per la creazione");
@@ -80,9 +99,10 @@ public class PrenotazioneController {
     @PostMapping("/filterSearch")
     public List<PrenotazioneDTO> filterSearch(@RequestBody PrenotazioneExampleDTO entity) {
         List<PrenotazioneDTO> prenotazioniByFiltersDTO = new ArrayList<>();
-        List<Prenotazione> prenotazioniByFilters = prenotazioneService.caricaPrenotazioniByFilters(prenotazioneMapper.toExampleEntity(entity));
-        
-        for(Prenotazione item : prenotazioniByFilters) {
+        List<Prenotazione> prenotazioniByFilters = prenotazioneService
+                .caricaPrenotazioniByFilters(prenotazioneMapper.toExampleEntity(entity));
+
+        for (Prenotazione item : prenotazioniByFilters) {
             prenotazioniByFiltersDTO.add(prenotazioneMapper.toDto(item));
         }
 

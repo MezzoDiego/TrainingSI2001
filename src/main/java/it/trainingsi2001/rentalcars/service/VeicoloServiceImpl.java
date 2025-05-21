@@ -75,4 +75,10 @@ public class VeicoloServiceImpl implements VeicoloService {
         veicoloRepository.deleteById(idToRemove);
     }
 
+    @Override
+    public Veicolo caricaSingoloElementoConTipologia(Long id) {
+        return veicoloRepository.findByIdFetchTipologia(id)
+                .orElseThrow(() -> new EntityNotFoundException("Veicolo non trovato"));
+    }
+
 }

@@ -41,19 +41,24 @@ public class VeicoloController {
         return veicoliDTO;
     }
 
-    @PostMapping("/inserisciNuovo")
+    @GetMapping("/{id}")
+    public VeicoloDTO getVeicoloById(@PathVariable(value = "id", required = true) Long id) {
+        return veicoloMapper.toDto(veicoloService.caricaSingoloElementoConTipologia(id));
+    }
+
+    @PostMapping
     public VeicoloDTO inserisciNuovoVeicolo(@RequestBody VeicoloDTO bodyVeicolo) {
 
         return veicoloMapper.toDto(veicoloService.inserisciNuovo(veicoloMapper.toEntity(bodyVeicolo)));
 
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public void deleteVeicolo(@PathVariable(value = "id", required = true) Long id) {
         veicoloService.rimuovi(id);
     }
 
-    @PutMapping("/modifica")
+    @PutMapping
     public VeicoloDTO modificaVeicolo(@RequestBody VeicoloDTO bodyVeicolo) {
 
         return veicoloMapper.toDto(veicoloService.aggiorna(veicoloMapper.toEntity(bodyVeicolo)));

@@ -19,11 +19,11 @@ import lombok.Setter;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class PrenotazioneDTO {
     private Long id;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm")
     private LocalDateTime dataInizio;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm")
     private LocalDateTime dataFine;
     private Boolean flagApprovazione;
-    private Long utente;
-    private Long veicolo;
+    private UtenteDTO utente;
+    private VeicoloDTO veicolo;
 }
